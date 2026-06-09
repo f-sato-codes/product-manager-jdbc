@@ -39,6 +39,7 @@ public class JdbcProductRepository implements ProductRepository{
 	}
 
 	//idを1件取得する
+	@Override
 	public Product findById (int id) {
 		String sql = "select * from products where id = ?";
 		try (
@@ -66,4 +67,59 @@ public class JdbcProductRepository implements ProductRepository{
 		
 		return null;
 	}
+	
+	//登録する。
+	@Override
+	public int insert(String name,int price,int stock) {
+		String sql = "insert into products (name,price,stock) values (?,?,?)";
+		try {
+			Connection connection = DriverManager.getConnection(URL,USER,PASSWORD);
+			PreparedStatement statement  = connection.prepareStatement(sql);
+			statement.setString(1,name);
+			statement.setInt(2,price);
+			statement.setInt(3,stock);
+			
+			int result = statement.executeUpdate();
+			System.out.println(result + "件登録しました。");
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	//ストックを更新する。
+	@Override
+	public int updateStock(int id,int stock) {
+		String sql = "update products set stock = ? where id = ?";
+		
+		try {
+			Connection connection = DriverManager.getConnection(URL,USER,PASSWORD);
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setInt(1,stock);
+			statement.setInt(2,id);
+			int result = statement.executeUpdate();
+			System.out.println(result + "件更新しました");
+			return  result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	//1件の削除
+	@Override
+	public int deleteById(int id) {
+		String sql = "delete from products where id = ?";
+		try {
+			Connection connetion = DriverManager.getConnection(URL,USER,PASSWORD);
+			PreparedStatement statement =  connetion.prepareStatement(sql);
+			statement.setInt(1, id);
+			int result = statement.executeUpdate();
+			System.out.println(result + "件削除しました");
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}	
 }
