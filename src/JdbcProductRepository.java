@@ -21,11 +21,12 @@ public class JdbcProductRepository implements ProductRepository{
 		List<Product> products = new ArrayList<> ();
 		String sql = "select * from products";
 		
-		try {
+		try (
 			Connection connection = DriverManager.getConnection(URL,USER,PASSWORD);
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
-			while(resultSet.next()) {
+			){
+				while(resultSet.next()) {
 				int id = resultSet.getInt("id");
 				String name = resultSet.getString("name");
 				int price = resultSet.getInt("price");
@@ -56,7 +57,7 @@ public class JdbcProductRepository implements ProductRepository{
 				Product product = new Product(getId,getName,getPrice,getStock);
 				return product;
 			}else {
-				System.out.println("商品が見つかりません");
+
 				return null;
 			}
 			
@@ -72,18 +73,18 @@ public class JdbcProductRepository implements ProductRepository{
 	@Override
 	public int insert(String name,int price,int stock) {
 		String sql = "insert into products (name,price,stock) values (?,?,?)";
-		try {
+		try (
 			Connection connection = DriverManager.getConnection(URL,USER,PASSWORD);
 			PreparedStatement statement  = connection.prepareStatement(sql);
+		){
 			statement.setString(1,name);
 			statement.setInt(2,price);
 			statement.setInt(3,stock);
 			
 			int result = statement.executeUpdate();
-			System.out.println(result + "件登録しました。");
 			return result;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			e.printStackTrace();		
 		}
 		return 0;
 	}
@@ -92,13 +93,13 @@ public class JdbcProductRepository implements ProductRepository{
 	public int updateStock(int id,int stock) {
 		String sql = "update products set stock = ? where id = ?";
 		
-		try {
+		try (
 			Connection connection = DriverManager.getConnection(URL,USER,PASSWORD);
 			PreparedStatement statement = connection.prepareStatement(sql);
+			){
 			statement.setInt(1,stock);
 			statement.setInt(2,id);
 			int result = statement.executeUpdate();
-			System.out.println(result + "件更新しました");
 			return  result;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -110,12 +111,12 @@ public class JdbcProductRepository implements ProductRepository{
 	@Override
 	public int deleteById(int id) {
 		String sql = "delete from products where id = ?";
-		try {
-			Connection connetion = DriverManager.getConnection(URL,USER,PASSWORD);
-			PreparedStatement statement =  connetion.prepareStatement(sql);
+		try (
+			Connection connection = DriverManager.getConnection(URL,USER,PASSWORD);
+			PreparedStatement statement =  connection.prepareStatement(sql);
+			){
 			statement.setInt(1, id);
 			int result = statement.executeUpdate();
-			System.out.println(result + "件削除しました");
 			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();

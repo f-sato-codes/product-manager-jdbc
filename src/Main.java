@@ -29,11 +29,21 @@ public class Main {
 				int id = scanner.nextInt();
 				System.out.println("在庫数を入力してください");
 				int stock = scanner.nextInt();
-				repository.updateStock(id,stock);
+				int result = repository.updateStock(id,stock);
+				if( result != 0) {
+					System.out.println(result + "件更新しました");
+				}else {
+					System.out.println("更新できませんでした");
+				}
 			}else if(menu == 4){
 				System.out.println("商品IDを入力してください");
 				int id = scanner.nextInt();
-				repository.deleteById(id);
+				int result = repository.deleteById(id);
+				if(result != 0) {
+					System.out.println(result + "件削除しました");
+				}else {
+					System.out.println("削除できませんでした");
+				}
 			}else if(menu == 5){
 				System.out.println("商品名を入力してください");
 				String name = scanner.next();
@@ -41,7 +51,12 @@ public class Main {
 				int price = scanner.nextInt();
 				System.out.println("在庫数を入力してください");
 				int stock = scanner.nextInt();
-				repository.insert(name,price,stock);
+				int result = repository.insert(name,price,stock);
+				if( result != 0) {
+					System.out.println(result + "件登録しました。");
+				}else {
+					System.out.println("登録できませんでした");
+				}
 			}else if(menu == 9) {
 				System.out.println("終了します");
 				running = false;
